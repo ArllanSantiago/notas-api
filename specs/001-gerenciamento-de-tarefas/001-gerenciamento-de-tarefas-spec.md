@@ -21,7 +21,7 @@ Usuários precisam registrar e acompanhar tarefas pessoais de forma simples. Hoj
 - RF-7: Operar sobre identificador inexistente deve resultar em erro de "não encontrado".
 - RF-8: Todas as operações (RF-1, RF-4, RF-5, RF-6) estão disponíveis via HTTP.
 - RF-9: Todas as operações (RF-1, RF-4, RF-5, RF-6) estão disponíveis via CLI.
-- RF-10: HTTP e CLI devem aplicar as mesmas regras e produzir resultados equivalentes sobre os mesmos dados.
+- RF-10: HTTP e CLI devem aplicar as mesmas regras de negócio. Quando operarem sobre a mesma instância de serviço/store, devem produzir resultados equivalentes; não há requisito de compartilhamento ou persistência de dados entre processos independentes.
 
 ## 4. Critérios de Aceite (EARS)
 - Quando o usuário criar uma tarefa com título válido, o sistema deve registrá-la como aberta e devolver seus dados, incluindo o identificador.
@@ -36,7 +36,10 @@ Usuários precisam registrar e acompanhar tarefas pessoais de forma simples. Hoj
 - Quando o usuário concluir ou remover um identificador inexistente, o sistema deve responder com erro de "não encontrado".
 - Quando uma operação falhar na CLI, o sistema deve exibir a mensagem de erro e encerrar com código de saída diferente de zero.
 - Quando uma operação for bem-sucedida na CLI, o sistema deve encerrar com código de saída zero.
-- Quando uma operação for feita por HTTP ou CLI, o sistema deve refletir o resultado na outra interface.
+- Quando HTTP e CLI operarem sobre a mesma instância de serviço/store, uma operação feita por uma interface deve ser refletida na outra.
+- Títulos válidos devem ter no máximo 255 caracteres; espaços em branco no início e no fim devem ser removidos antes do armazenamento.
+- Identificadores devem ser UUIDs gerados com `node:crypto`; a remoção é definitiva e UUIDs removidos não são reutilizados.
+- A CLI deve oferecer `add --title <título>`, `list [--status all|open|done]`, `complete <id>` e `delete <id>`. Todos os sucessos imprimem JSON; falhas imprimem mensagem em `stderr` e resultam em código de saída diferente de zero.
 
 ## 5. Fora de Escopo
 - Autenticação e múltiplos usuários.
@@ -45,9 +48,9 @@ Usuários precisam registrar e acompanhar tarefas pessoais de forma simples. Hoj
 - Prazos, prioridades, tags e busca textual.
 - Paginação e ordenação customizada.
 
-## 6. Questões em Aberto
-- Limite máximo de tamanho do título?
-- Concluir tarefa já concluída deve ser sucesso silencioso (assumido aqui) ou erro?
-- Identificadores removidos podem ser reutilizados?
-- Remoção deve ser definitiva (assumido) ou lógica?
-- O estado é compartilhado entre HTTP e CLI (assumido pelo RF-10) ou cada um tem o seu?
+## 6. Decisões de Escopo
+- O título tem limite máximo de 255 caracteres; espaços externos são removidos antes de persistir.
+- Concluir uma tarefa já concluída é idempotente e retorna sucesso.
+- Identificadores são UUIDs; remoção é definitiva e identificadores removidos não são reutilizados.
+- RF-10 trata de equivalência de regras sobre uma mesma instância. O store em memória não compartilha dados entre processos independentes; persistência entre execuções está fora do escopo.
+- A CLI usa os comandos e formatos de saída descritos no RF-9 e nos critérios de aceite acima.

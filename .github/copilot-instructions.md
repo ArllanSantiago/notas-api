@@ -19,7 +19,8 @@
 - `notas-api/src/service`: regras de negócio
 - `notas-api/src/http`: camada HTTP
 - `notas-api/src/cli.ts`: entrada CLI
-- `specs/` na raiz do workspace: artefatos spec-driven
+- `specs/` na raiz do workspace: cada feature fica em `specs/<NNN>-<slug>/`
+- Artefatos da feature: `<NNN>-<slug>-spec.md`, `<NNN>-<slug>-plan.md` e `<NNN>-<slug>-tasks.md` dentro da pasta numerada
 
 ## Convenções
 - Camadas não pulam: http/cli -> service -> store.
@@ -32,4 +33,5 @@
 ## Fluxo de trabalho
 - `/especificar` -> `/planejar` -> `/tarefas` -> `/implementar`.
 - Revisão humana entre as fases.
-- Artefatos em `specs/` na raiz do workspace.
+- Artefatos em `specs/<NNN>-<slug>/`, com o mesmo prefixo numerado e slug nos nomes dos arquivos: `<NNN>-<slug>-spec.md`, `<NNN>-<slug>-plan.md` e `<NNN>-<slug>-tasks.md`.
+- Não criar arquivos genéricos `spec.md`, `plan.md` ou `tasks.md` dentro das pastas de features.
